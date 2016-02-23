@@ -32,6 +32,7 @@ import com.squid.core.database.model.DatabaseProduct;
 import com.squid.core.domain.extensions.AddMonthsOperatorDefinition;
 import com.squid.core.domain.extensions.DateOperatorDefinition;
 import com.squid.core.domain.extensions.DateTruncateOperatorDefinition;
+import com.squid.core.domain.extensions.DateTruncateShortcutsOperatorDefinition;
 import com.squid.core.domain.extensions.ExtractOperatorDefinition;
 import com.squid.core.domain.extensions.PosStringOperatorDefinition;
 import com.squid.core.domain.extensions.SubstringOperatorDefinition;
@@ -43,6 +44,7 @@ import com.squid.core.domain.operators.IntrinsicOperators;
 import com.squid.core.domain.operators.OperatorDefinition;
 import com.squid.core.domain.operators.StdevPopOperatorDefinition;
 import com.squid.core.sql.db.features.IGroupingSetSupport;
+import com.squid.core.sql.db.features.IMetadataForeignKeySupport;
 import com.squid.core.sql.db.render.AddMonthsAsIntervalOperatorRenderer;
 import com.squid.core.sql.db.render.DateAddSubOperatorRenderer;
 import com.squid.core.sql.db.render.DateEpochOperatorRenderer;
@@ -85,6 +87,11 @@ extends DefaultSkinProvider
 		registerOperatorRender(DateOperatorDefinition.FROM_UNIXTIME, new PostgresDateEpochOperatorRenderer(DateEpochOperatorRenderer.FROM));
 		registerOperatorRender(DateOperatorDefinition.TO_UNIXTIME, new PostgresDateEpochOperatorRenderer(DateEpochOperatorRenderer.TO));
         registerOperatorRender(DateTruncateOperatorDefinition.DATE_TRUNCATE, new PostgresDateTruncateOperatorRenderer());
+		registerOperatorRender(DateTruncateShortcutsOperatorDefinition.HOURLY_ID, new PostgresDateTruncateOperatorRenderer());
+		registerOperatorRender(DateTruncateShortcutsOperatorDefinition.DAILY_ID, new PostgresDateTruncateOperatorRenderer());
+		registerOperatorRender(DateTruncateShortcutsOperatorDefinition.WEEKLY_ID, new PostgresDateTruncateOperatorRenderer());
+		registerOperatorRender(DateTruncateShortcutsOperatorDefinition.MONTHLY_ID, new PostgresDateTruncateOperatorRenderer());
+		registerOperatorRender(DateTruncateShortcutsOperatorDefinition.YEARLY_ID, new PostgresDateTruncateOperatorRenderer());
 		//
 //See Ticket #1620
 //		registerOperatorRender(IntervalOperatorDefinition.INTERVAL_DAY, new PostgresIntervalOperatorRenderer("DAY"));
@@ -134,11 +141,9 @@ extends DefaultSkinProvider
 		if (featureID==ZeroIfNullFeatureSupport.ID) {
 			return zeroIfNull;
 		}
-		/*
-		 * else if(featureID == IExplainFeatureSupport.EXPLAIN_FEATURE_ID){
-			return EXPLAIN_SUPPORT;
+		if (featureID == IMetadataForeignKeySupport.ID) {
+			return ISkinFeatureSupport.IS_SUPPORTED;
 		}
-		 */
 		else if(featureID == MetatdataSearchFeatureSupport.METADATA_SEARCH_FEATURE_ID){
 			return METADATA_SEARCH_SUPPORT;
 		}else if (featureID == IGroupingSetSupport.ID) {
