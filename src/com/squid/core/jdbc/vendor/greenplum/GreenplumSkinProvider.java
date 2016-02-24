@@ -94,7 +94,7 @@ extends PostgresSkinProvider
 			return ISkinFeatureSupport.IS_NOT_SUPPORTED;
 		}
 		else if (featureID == IMetadataForeignKeySupport.ID) {
-			return ISkinFeatureSupport.IS_NOT_SUPPORTED;
+			return ISkinFeatureSupport.IS_SUPPORTED;
 		}
 		//else
 		return super.getFeatureSupport(skin,featureID);
