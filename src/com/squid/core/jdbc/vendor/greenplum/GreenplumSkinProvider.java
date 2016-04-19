@@ -43,60 +43,62 @@ import com.squid.core.sql.render.ZeroIfNullFeatureSupport;
 
 public class GreenplumSkinProvider extends PostgresSkinProvider {
 
-  private static final ZeroIfNullFeatureSupport zeroIfNull = new ANSIZeroIfNullFeatureSupport();
+	private static final ZeroIfNullFeatureSupport zeroIfNull = new ANSIZeroIfNullFeatureSupport();
 
-  public GreenplumSkinProvider() {
-    super();
-    registerOperatorRender(OperatorDefinition.getExtendedId(IntrinsicOperators.PERCENTILE), new PercentileRenderer());
-    registerOperatorRender(OperatorDefinition.getExtendedId(IntrinsicOperators.MEDIAN), new OrderedAnalyticOperatorRenderer());
+	public GreenplumSkinProvider() {
+		super();
+		registerOperatorRender(OperatorDefinition.getExtendedId(IntrinsicOperators.PERCENTILE),
+				new PercentileRenderer());
+		registerOperatorRender(OperatorDefinition.getExtendedId(IntrinsicOperators.MEDIAN),
+				new OrderedAnalyticOperatorRenderer());
+		//
+		unregisterOperatorRender(RegexpOperatorDefinition.REGEXP_COUNT);
+		unregisterOperatorRender(RegexpOperatorDefinition.REGEXP_INSTR);
+	}
 
-    unregisterOperatorRender(RegexpOperatorDefinition.REGEXP_COUNT);
-    unregisterOperatorRender(RegexpOperatorDefinition.REGEXP_INSTR);
-  }
+	@Override
+	public double computeAccuracy(DatabaseProduct product) {
+		try {
+			if (product != null) {
+				if (IMetadataEngine.GREENPLUM_NAME.equalsIgnoreCase(product.getProductName())) {
+					return PERFECT_MATCH;
+				} else {
+					return NOT_APPLICABLE;
+				}
+			} else {
+				return NOT_APPLICABLE;
+			}
+		} catch (Exception e) {
+			return NOT_APPLICABLE;
+		}
+	}
 
-  @Override
-  public double computeAccuracy(DatabaseProduct product) {
-    try {
-      if (product != null) {
-        if (IMetadataEngine.GREENPLUM_NAME.equalsIgnoreCase(product.getProductName())) {
-          return PERFECT_MATCH;
-        } else {
-          return NOT_APPLICABLE;
-        }
-      } else {
-        return NOT_APPLICABLE;
-      }
-    } catch (Exception e) {
-      return NOT_APPLICABLE;
-    }
-  }
+	@Override
+	public SQLSkin createSkin(DatabaseProduct product) {
+		return new GreenplumSQLSkin(this, product);
+	}
 
-  @Override
-  public SQLSkin createSkin(DatabaseProduct product) {
-    return new GreenplumSQLSkin(this, product);
-  }
+	@Override
+	public String getSkinPrefix(DatabaseProduct product) {
+		return "greenplum";
+	}
 
-  @Override
-  public String getSkinPrefix(DatabaseProduct product) {
-    return "greenplum";
-  }
+	@Override
+	public ISkinProvider getParentSkinProvider() {
+		return SkinRegistry.INSTANCE.findSkinProvider(PostgresSkinProvider.class);
+	}
 
-  @Override
-  public ISkinProvider getParentSkinProvider() {
-    return SkinRegistry.INSTANCE.findSkinProvider(PostgresSkinProvider.class);
-  }
-
-  @Override
-  public ISkinFeatureSupport getFeatureSupport(DefaultJDBCSkin skin, String featureID) {
-    if (featureID == IGroupingSetSupport.ID) {
-      return IGroupingSetSupport.IS_SUPPORTED;
-    } else if (featureID == DataSourceReliable.FeatureSupport.AUTOCOMMIT) {
-      return ISkinFeatureSupport.IS_NOT_SUPPORTED;
-    } else if (featureID == IMetadataForeignKeySupport.ID) {
-      return ISkinFeatureSupport.IS_SUPPORTED;
-    }
-    // else
-    return super.getFeatureSupport(skin, featureID);
-  }
+	@Override
+	public ISkinFeatureSupport getFeatureSupport(DefaultJDBCSkin skin, String featureID) {
+		if (featureID == IGroupingSetSupport.ID) {
+			return IGroupingSetSupport.IS_SUPPORTED;
+		} else if (featureID == DataSourceReliable.FeatureSupport.AUTOCOMMIT) {
+			return ISkinFeatureSupport.IS_NOT_SUPPORTED;
+		} else if (featureID == IMetadataForeignKeySupport.ID) {
+			return ISkinFeatureSupport.IS_SUPPORTED;
+		}
+		// else
+		return super.getFeatureSupport(skin, featureID);
+	}
 
 }

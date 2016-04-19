@@ -105,7 +105,7 @@ public class PostgresSkinProvider extends DefaultSkinProvider {
     registerOperatorRender(StdevPopOperatorDefinition.getExtendedId(IntrinsicOperators.STDDEV_SAMP), new VarStdevRenderer());
     registerOperatorRender(CoVarPopOperatorDefinition.getExtendedId(IntrinsicOperators.COVAR_POP), new CoVarRenderer());
     registerOperatorRender(AggregateOperatorDefinition.getExtendedId(IntrinsicOperators.AVG), new PostgresAvgRenderer());
-
+    //
     unregisterOperatorRender(RegexpOperatorDefinition.REGEXP_COUNT);
     unregisterOperatorRender(RegexpOperatorDefinition.REGEXP_INSTR);
 
