@@ -26,7 +26,7 @@ package com.squid.core.jdbc.vendor.greenplum;
 import com.squid.core.database.impl.DataSourceReliable;
 import com.squid.core.database.metadata.IMetadataEngine;
 import com.squid.core.database.model.DatabaseProduct;
-import com.squid.core.domain.extensions.RegexpOperatorDefinition;
+import com.squid.core.domain.extensions.string.regex.RegexpOperatorDefinition;
 import com.squid.core.domain.operators.IntrinsicOperators;
 import com.squid.core.domain.operators.OperatorDefinition;
 import com.squid.core.jdbc.vendor.greenplum.postgresql.render.ANSIZeroIfNullFeatureSupport;

@@ -23,7 +23,7 @@
  *******************************************************************************/
 package com.squid.core.jdbc.vendor.greenplum.postgresql.render;
 
-import com.squid.core.domain.extensions.ExtractOperatorDefinition;
+import com.squid.core.domain.extensions.date.extract.ExtractOperatorDefinition;
 import com.squid.core.domain.operators.OperatorDefinition;
 import com.squid.core.sql.db.render.ExtractOperatorRenderer;
 import com.squid.core.sql.render.OperatorPiece;

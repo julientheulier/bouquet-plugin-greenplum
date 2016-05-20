@@ -23,7 +23,7 @@
  *******************************************************************************/
 package com.squid.core.jdbc.vendor.greenplum.postgresql.render;
 
-import com.squid.core.domain.extensions.DateTruncateOperatorDefinition;
+import com.squid.core.domain.extensions.date.DateTruncateOperatorDefinition;
 import com.squid.core.domain.operators.OperatorDefinition;
 import com.squid.core.sql.db.render.DateTruncateOperatorRenderer;
 import com.squid.core.sql.render.OperatorPiece;
