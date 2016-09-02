@@ -90,6 +90,7 @@ public class PostgresSkinProvider extends DefaultSkinProvider {
     registerOperatorRender(DateTruncateShortcutsOperatorDefinition.DAILY_ID, new PostgresDateTruncateOperatorRenderer());
     registerOperatorRender(DateTruncateShortcutsOperatorDefinition.WEEKLY_ID, new PostgresDateTruncateOperatorRenderer());
     registerOperatorRender(DateTruncateShortcutsOperatorDefinition.MONTHLY_ID, new PostgresDateTruncateOperatorRenderer());
+    registerOperatorRender(DateTruncateShortcutsOperatorDefinition.QUATERLY_ID, new PostgresDateTruncateOperatorRenderer());
     registerOperatorRender(DateTruncateShortcutsOperatorDefinition.YEARLY_ID, new PostgresDateTruncateOperatorRenderer());
     //
     // See Ticket #1620
