@@ -11,6 +11,8 @@ import com.squid.core.database.plugins.BaseBouquetPlugin;
 
 public class GreenplumBouquetPlugin extends BaseBouquetPlugin {
 
+	ArrayList<Driver> exposedDrivers ;
+	
 	@Override
 	public void loadDriver() {
 		// get the current plugin jar
@@ -26,11 +28,20 @@ public class GreenplumBouquetPlugin extends BaseBouquetPlugin {
 		ServiceLoader<Driver> sl = ServiceLoader.load(java.sql.Driver.class, driverCL);
 		Iterator<Driver> driversIter = sl.iterator();
 		this.drivers = new ArrayList<Driver>();
-
+		this.exposedDrivers= new  ArrayList<Driver>();
 		while (driversIter.hasNext()) {
-			drivers.add(driversIter.next());
+			Driver next = driversIter.next(); 
+			drivers.add(next);
+			if (!next.getClass().toString().contains("postgres")){
+				this.exposedDrivers.add(next);
+			}
 		}
 		Thread.currentThread().setContextClassLoader(rollback);
+	}
+	
+	@Override
+	public ArrayList<Driver> getDrivers(){
+		return this.exposedDrivers;
 	}
 
 }
