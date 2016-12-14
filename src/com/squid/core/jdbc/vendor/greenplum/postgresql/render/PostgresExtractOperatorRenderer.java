@@ -48,11 +48,11 @@ extends ExtractOperatorRenderer
 		if (args.length!=1) {
 			throw new RenderingException("invalid EXTRACT operator");
 		}
-		if (opDef.getExtendedID()==ExtractOperatorDefinition.EXTRACT_DAY_OF_WEEK) {
+		if (opDef.getExtendedID().equals(ExtractOperatorDefinition.EXTRACT_DAY_OF_WEEK)) {
 			String cast = "CAST("+super.prettyPrint(skin,piece, opDef, args)+" AS INTEGER)";
 			return "CASE WHEN "+cast+" = 0 THEN 7 ELSE "+cast+" END";
 //			return "CASE WHEN CAST(TO_CHAR("+args[0]+",'D') AS INTEGER) = 1 THEN 7 ELSE CAST(TO_CHAR("+args[0]+",'D') AS INTEGER)-1 END";
-		} else if (opDef.getExtendedID()==ExtractOperatorDefinition.EXTRACT_DAY_OF_YEAR) {
+		} else if (opDef.getExtendedID().equals(ExtractOperatorDefinition.EXTRACT_DAY_OF_YEAR)) {
 			return "CAST("+super.prettyPrint(skin,piece, opDef, args)+" AS INTEGER)";
 		} else {
 			return super.prettyPrint(skin,piece, opDef, args);
