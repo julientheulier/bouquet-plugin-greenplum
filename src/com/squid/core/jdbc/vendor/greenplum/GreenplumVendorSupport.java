@@ -25,6 +25,7 @@ package com.squid.core.jdbc.vendor.greenplum;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Map;
 import java.util.Properties;
 
 import com.squid.core.database.impl.DataSourceReliable;
@@ -35,6 +36,8 @@ import com.squid.core.database.statistics.IDatabaseStatistics;
 import com.squid.core.jdbc.formatter.DataFormatter;
 import com.squid.core.jdbc.formatter.IJDBCDataFormatter;
 import com.squid.core.jdbc.vendor.DefaultVendorSupport;
+import com.squid.core.jdbc.vendor.JdbcUrlParameter;
+import com.squid.core.jdbc.vendor.JdbcUrlTemplate;
 import com.squid.core.jdbc.vendor.greenplum.postgresql.PostgresqlJDBCDataFormatter;
 
 public class GreenplumVendorSupport extends DefaultVendorSupport {
@@ -80,6 +83,39 @@ public class GreenplumVendorSupport extends DefaultVendorSupport {
 	@Override
 	public VendorMetadataSupport getVendorMetadataSupport() {
 		return METADATA;
+	}
+	
+	@Override
+	public JdbcUrlTemplate getJdbcUrlTemplate() {
+		JdbcUrlTemplate template = new JdbcUrlTemplate(getVendorId(), "jdbc:postgresql://[hostname]:{port}/{database}");
+		template.add(new JdbcUrlParameter("hostname", false));
+		template.add(new JdbcUrlParameter("port", true));
+		template.add(new JdbcUrlParameter("database", true));
+		return template;
+	}
+	
+	@Override
+	public String buildJdbcUrl(Map<String, String> arguments) throws IllegalArgumentException {
+		String url = "jdbc:postgresql://";
+		String hostname = arguments.get("hostname");
+		if (hostname==null) throw new IllegalArgumentException("cannot build JDBC url, missing mandatory argument 'hostname'");
+		url += hostname;
+		String port = arguments.get("port");
+		if (port!=null && !port.equals("")) {
+			// check it's an integer
+			try {
+				int p = Integer.valueOf(port);
+				url += ":"+Math.abs(p);// just in case
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("cannot build JDBC url, 'port' value must be a valid port number");
+			}
+		}
+		String database = arguments.get("database");
+		if (database!=null) {
+			url += "/" + database;
+		}
+		// validate ?
+		return url;
 	}
 
 }
