@@ -33,6 +33,7 @@ import com.squid.core.jdbc.vendor.greenplum.postgresql.render.ANSIZeroIfNullFeat
 import com.squid.core.jdbc.vendor.greenplum.postgresql.render.PostgresSkinProvider;
 import com.squid.core.sql.db.features.IGroupingSetSupport;
 import com.squid.core.sql.db.features.IMetadataForeignKeySupport;
+import com.squid.core.sql.db.features.IRollupStrategySupport;
 import com.squid.core.sql.db.render.OrderedAnalyticOperatorRenderer;
 import com.squid.core.sql.db.templates.DefaultJDBCSkin;
 import com.squid.core.sql.db.templates.ISkinProvider;
@@ -96,6 +97,8 @@ public class GreenplumSkinProvider extends PostgresSkinProvider {
 			return ISkinFeatureSupport.IS_NOT_SUPPORTED;
 		} else if (featureID == IMetadataForeignKeySupport.ID) {
 			return ISkinFeatureSupport.IS_SUPPORTED;
+		} else if (featureID.equals(IRollupStrategySupport.ID)) {
+			return IRollupStrategySupport.OPTIMIZE_USING_WITH_STRATEGY;
 		}
 		// else
 		return super.getFeatureSupport(skin, featureID);

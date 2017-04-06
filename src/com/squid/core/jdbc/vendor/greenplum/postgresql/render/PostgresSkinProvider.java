@@ -46,6 +46,7 @@ import com.squid.core.domain.operators.OperatorDefinition;
 import com.squid.core.domain.operators.StdevPopOperatorDefinition;
 import com.squid.core.sql.db.features.IGroupingSetSupport;
 import com.squid.core.sql.db.features.IMetadataForeignKeySupport;
+import com.squid.core.sql.db.features.IRollupStrategySupport;
 import com.squid.core.sql.db.render.AddMonthsAsIntervalOperatorRenderer;
 import com.squid.core.sql.db.render.DateAddSubOperatorRenderer;
 import com.squid.core.sql.db.render.DateEpochOperatorRenderer;
@@ -153,7 +154,9 @@ public class PostgresSkinProvider extends DefaultSkinProvider {
       return IGroupingSetSupport.IS_NOT_SUPPORTED;
     } else if (featureID == DataSourceReliable.FeatureSupport.AUTOCOMMIT) {
       return ISkinFeatureSupport.IS_NOT_SUPPORTED;
-    }
+    } else if (featureID.equals(IRollupStrategySupport.ID)) {
+		return IRollupStrategySupport.OPTIMIZE_USING_WITH_STRATEGY;
+	}
     // else
     return super.getFeatureSupport(skin, featureID);
   }
