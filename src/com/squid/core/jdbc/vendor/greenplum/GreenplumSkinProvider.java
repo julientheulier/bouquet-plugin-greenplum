@@ -26,7 +26,6 @@ package com.squid.core.jdbc.vendor.greenplum;
 import com.squid.core.database.impl.DataSourceReliable;
 import com.squid.core.database.metadata.IMetadataEngine;
 import com.squid.core.database.model.DatabaseProduct;
-import com.squid.core.domain.extensions.string.regex.RegexpOperatorDefinition;
 import com.squid.core.domain.operators.IntrinsicOperators;
 import com.squid.core.domain.operators.OperatorDefinition;
 import com.squid.core.jdbc.vendor.greenplum.postgresql.render.ANSIZeroIfNullFeatureSupport;
@@ -53,8 +52,6 @@ public class GreenplumSkinProvider extends PostgresSkinProvider {
 		registerOperatorRender(OperatorDefinition.getExtendedId(IntrinsicOperators.MEDIAN),
 				new OrderedAnalyticOperatorRenderer());
 		//
-		unregisterOperatorRender(RegexpOperatorDefinition.REGEXP_COUNT);
-		unregisterOperatorRender(RegexpOperatorDefinition.REGEXP_INSTR);
 	}
 
 	@Override
