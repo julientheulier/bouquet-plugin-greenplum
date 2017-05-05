@@ -28,6 +28,7 @@ import java.util.List;
 import com.squid.core.database.impl.DataSourceReliable;
 import com.squid.core.database.metadata.IMetadataEngine;
 import com.squid.core.database.model.DatabaseProduct;
+import com.squid.core.domain.extensions.JSON.JSONOperatorDefinition;
 //import com.squid.core.db.engine.model.session.IExecutionItem;
 import com.squid.core.domain.extensions.date.AddMonthsOperatorDefinition;
 import com.squid.core.domain.extensions.date.DateTruncateOperatorDefinition;
@@ -71,6 +72,11 @@ public class PostgresSkinProvider extends DefaultSkinProvider {
 		//
 		registerOperatorRender(PosStringOperatorDefinition.STRING_POSITION, new PosStringRenderer());
 		registerOperatorRender(SubstringOperatorDefinition.STRING_SUBSTRING, new SubStringRenderer());
+		//
+		registerOperatorRender(JSONOperatorDefinition.JSON_ARRAY_LENGTH, new PostgresJSONOperatorRenderer());
+		registerOperatorRender(JSONOperatorDefinition.JSON_EXTRACT_FROM_ARRAY, new PostgresJSONOperatorRenderer());
+		registerOperatorRender(JSONOperatorDefinition.JSON_EXTRACT_PATH_TEXT, new PostgresJSONOperatorRenderer());
+		//
 		registerOperatorRender(OperatorDefinition.getExtendedId(IntrinsicOperators.SUM), new OrderedAnalyticOperatorRenderer());
 		//
 		registerOperatorRender(RandOperatorDefinition.RAND, new PostgresRandOperatorRenderer());
