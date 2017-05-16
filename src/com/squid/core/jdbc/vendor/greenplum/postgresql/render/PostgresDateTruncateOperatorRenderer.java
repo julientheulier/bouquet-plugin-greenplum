@@ -41,13 +41,13 @@ public class PostgresDateTruncateOperatorRenderer extends DateTruncateOperatorRe
 	protected String prettyPrintTwoArgs(SQLSkin skin, OperatorPiece piece, OperatorDefinition opDef, String[] args)
 			throws RenderingException {
 		// ExtendedType[] extendedTypes = getExtendedPieces(piece);
-		if (DateTruncateOperatorDefinition.WEEK.equals(args[1].replaceAll("'", ""))) {
+		if (DateTruncateOperatorDefinition.WEEK.equalsIgnoreCase(args[1].replaceAll("'", ""))) {
 			return "CAST(DATE_TRUNC('week', " + args[0] + ") AS DATE)";
-		} else if (DateTruncateOperatorDefinition.MONTH.equals(args[1].replaceAll("'", ""))) {
+		} else if (DateTruncateOperatorDefinition.MONTH.equalsIgnoreCase(args[1].replaceAll("'", ""))) {
 			return "CAST(DATE_TRUNC('month', " + args[0] + ") AS DATE)";
-		} else if (DateTruncateOperatorDefinition.QUARTER.equals(args[1].replaceAll("'", ""))) {
+		} else if (DateTruncateOperatorDefinition.QUARTER.equalsIgnoreCase(args[1].replaceAll("'", ""))) {
 			return "CAST(DATE_TRUNC('quarter', " + args[0] + ") AS DATE)";
-		} else if (DateTruncateOperatorDefinition.YEAR.equals(args[1].replaceAll("'", ""))) {
+		} else if (DateTruncateOperatorDefinition.YEAR.equalsIgnoreCase(args[1].replaceAll("'", ""))) {
 			return "CAST(DATE_TRUNC('year', " + args[0] + ") AS DATE)";
 		} else {
 			// Even if it's a date, we have to truncate it and transform to a
