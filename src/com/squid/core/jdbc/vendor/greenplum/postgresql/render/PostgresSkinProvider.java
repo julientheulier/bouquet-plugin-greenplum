@@ -107,7 +107,7 @@ public class PostgresSkinProvider extends DefaultSkinProvider {
 		// registerOperatorRender(IntervalOperatorDefinition.INTERVAL_HOUR, new PostgresIntervalOperatorRenderer("HOUR"));
 		// registerOperatorRender(IntervalOperatorDefinition.INTERVAL_MINUTE, new PostgresIntervalOperatorRenderer("MINUTE"));
 		// registerOperatorRender(IntervalOperatorDefinition.INTERVAL_SECOND, new PostgresIntervalOperatorRenderer("SECOND"));
-		registerOperatorRender(StdevPopOperatorDefinition.getExtendedId(IntrinsicOperators.VARIANCE), new VarStdevRenderer());
+		registerOperatorRender(StdevPopOperatorDefinition.getExtendedId(IntrinsicOperators.VAR_POP), new VarStdevRenderer());
 		registerOperatorRender(StdevPopOperatorDefinition.getExtendedId(IntrinsicOperators.VAR_SAMP), new VarStdevRenderer());
 		registerOperatorRender(StdevPopOperatorDefinition.getExtendedId(IntrinsicOperators.STDDEV_POP), new VarStdevRenderer());
 		registerOperatorRender(StdevPopOperatorDefinition.getExtendedId(IntrinsicOperators.STDDEV_SAMP), new VarStdevRenderer());
