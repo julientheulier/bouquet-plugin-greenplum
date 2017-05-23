@@ -39,6 +39,7 @@ import com.squid.core.domain.extensions.string.PosStringOperatorDefinition;
 import com.squid.core.domain.extensions.string.SubstringOperatorDefinition;
 import com.squid.core.domain.extensions.string.regex.RegexpOperatorDefinition;
 import com.squid.core.domain.maths.RandOperatorDefinition;
+import com.squid.core.domain.maths.RoundOperatorDefinition;
 import com.squid.core.domain.maths.SinhCoshTanhOperatorDefintion;
 import com.squid.core.domain.operators.AggregateOperatorDefinition;
 import com.squid.core.domain.operators.CoVarPopOperatorDefinition;
@@ -79,6 +80,7 @@ public class PostgresSkinProvider extends DefaultSkinProvider {
 		//
 		registerOperatorRender(OperatorDefinition.getExtendedId(IntrinsicOperators.SUM), new OrderedAnalyticOperatorRenderer());
 		//
+		registerOperatorRender(RoundOperatorDefinition.ROUND, new PostgresRoundOperatorRenderer());
 		registerOperatorRender(RandOperatorDefinition.RAND, new PostgresRandOperatorRenderer());
 		registerOperatorRender(SinhCoshTanhOperatorDefintion.SINH, new MySQLPosgresSinhOperatorRenderer());
 		registerOperatorRender(SinhCoshTanhOperatorDefintion.COSH, new MySQLPosgresCoshOperatorRenderer());
