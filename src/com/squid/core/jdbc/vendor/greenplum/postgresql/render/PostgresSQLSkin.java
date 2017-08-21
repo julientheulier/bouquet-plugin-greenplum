@@ -2,12 +2,12 @@
  * Copyright © Squid Solutions, 2016
  *
  * This file is part of Open Bouquet software.
- *  
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation (version 3 of the License).
  *
- * There is a special FOSS exception to the terms and conditions of the 
+ * There is a special FOSS exception to the terms and conditions of the
  * licenses as they are applied to this program. See LICENSE.txt in
  * the directory of this program distribution.
  *
@@ -41,6 +41,7 @@ import com.squid.core.sql.render.ISamplingDecorator;
 import com.squid.core.sql.render.OperatorPiece;
 import com.squid.core.sql.render.RenderingException;
 import com.squid.core.sql.render.SQLSkin;
+import com.squid.core.sql.render.SQLTokenConstant;
 
 
 public class PostgresSQLSkin extends DefaultJDBCSkin {
@@ -65,8 +66,12 @@ public class PostgresSQLSkin extends DefaultJDBCSkin {
 	@Override
 	public String getToken(int token) throws RenderingException {
 		switch (token) {
-		default:
-			return super.getToken(token);
+			case SQLTokenConstant.NULLS_FIRST:
+				return "NULLS FIRST";
+			case SQLTokenConstant.NULLS_LAST:
+				return "NULLS LAST";
+			default:
+				return super.getToken(token);
 		}
 	}
 
@@ -130,7 +135,7 @@ public class PostgresSQLSkin extends DefaultJDBCSkin {
 			return super.quoteConstant(value, domain);
 		}
 	}
-	
+
 	@Override
 	public ExtendedType createExtendedType(IDomain domain, int dataType,
 			String format, int size, int precision) {
@@ -140,7 +145,7 @@ public class PostgresSQLSkin extends DefaultJDBCSkin {
 			return new ExtendedType(domain, computeDataType(domain, dataType, format, size, precision), precision, size);
 		}
 	}
-	
+
 	protected int computeDataType(IDomain domain, int dataType, String format, int size, int precision) {
 		if (domain.isInstanceOf(IDomain.NUMERIC)) {
 			if (precision==0) {
@@ -169,23 +174,23 @@ public class PostgresSQLSkin extends DefaultJDBCSkin {
 				} else {
 					return java.sql.Types.CHAR;
 				}
-		} else
-			if (domain.isInstanceOf(IDomain.TIMESTAMP)) {
-				return java.sql.Types.TIMESTAMP;
-		} else
-			if (domain.isInstanceOf(IDomain.DATE)) {
-				if (format!=null && format.contains("HH")) {
-					// support timestamp
+			} else
+				if (domain.isInstanceOf(IDomain.TIMESTAMP)) {
 					return java.sql.Types.TIMESTAMP;
-				} else {
-					return java.sql.Types.DATE;
-				}
-		} else
-			if (domain.isInstanceOf(IDomain.TIME)) {
-				return java.sql.Types.TIME;
-		} else {
-			return java.sql.Types.NULL;
-		}
+				} else
+					if (domain.isInstanceOf(IDomain.DATE)) {
+						if (format!=null && format.contains("HH")) {
+							// support timestamp
+							return java.sql.Types.TIMESTAMP;
+						} else {
+							return java.sql.Types.DATE;
+						}
+					} else
+						if (domain.isInstanceOf(IDomain.TIME)) {
+							return java.sql.Types.TIME;
+						} else {
+							return java.sql.Types.NULL;
+						}
 	}
 
 	@Override
@@ -206,21 +211,21 @@ public class PostgresSQLSkin extends DefaultJDBCSkin {
 			return "NULL";
 		}
 		switch (type.getDataType()) {
-		case Types.DATE:
-		case Types.TIME:
-		case Types.TIMESTAMP:
-			return getTypeName(type.getDataType());
-		case CustomTypes.INTERVAL:
-			return "INTERVAL";
-		case Types.TINYINT:
-			return "SMALLINT";
-		default:
-			if (type.getName().equalsIgnoreCase("nvarchar")) {
-				return "VARCHAR("+type.getSize()+")";
-			} else if (type.getName().equalsIgnoreCase("nchar")) {
-				return "CHAR("+type.getSize()+")";
-			}
-			return super.getTypeDefinition(type);
+			case Types.DATE:
+			case Types.TIME:
+			case Types.TIMESTAMP:
+				return getTypeName(type.getDataType());
+			case CustomTypes.INTERVAL:
+				return "INTERVAL";
+			case Types.TINYINT:
+				return "SMALLINT";
+			default:
+				if (type.getName().equalsIgnoreCase("nvarchar")) {
+					return "VARCHAR("+type.getSize()+")";
+				} else if (type.getName().equalsIgnoreCase("nchar")) {
+					return "CHAR("+type.getSize()+")";
+				}
+				return super.getTypeDefinition(type);
 		}
 	}
 
@@ -235,15 +240,15 @@ public class PostgresSQLSkin extends DefaultJDBCSkin {
 		}
 	}
 
-    @Override
+	@Override
 	public String fullyQualified(Table table) {
-        String res = "";
-        if (table.getSchema()!=null&&!table.getSchema().isNullSchema() //&& !table.isGlobalTemporary()
-        		) {
-            res += quoteSchemaIdentifier(table.getSchema())+".";
-        }
-        res += quoteTableIdentifier(table);
-        return res;
-    }
+		String res = "";
+		if (table.getSchema()!=null&&!table.getSchema().isNullSchema() //&& !table.isGlobalTemporary()
+				) {
+			res += quoteSchemaIdentifier(table.getSchema())+".";
+		}
+		res += quoteTableIdentifier(table);
+		return res;
+	}
 
 }
