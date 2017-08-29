@@ -41,7 +41,6 @@ import com.squid.core.sql.render.ISamplingDecorator;
 import com.squid.core.sql.render.OperatorPiece;
 import com.squid.core.sql.render.RenderingException;
 import com.squid.core.sql.render.SQLSkin;
-import com.squid.core.sql.render.SQLTokenConstant;
 
 
 public class PostgresSQLSkin extends DefaultJDBCSkin {
@@ -66,10 +65,6 @@ public class PostgresSQLSkin extends DefaultJDBCSkin {
 	@Override
 	public String getToken(int token) throws RenderingException {
 		switch (token) {
-			case SQLTokenConstant.NULLS_FIRST:
-				return "NULLS FIRST";
-			case SQLTokenConstant.NULLS_LAST:
-				return "NULLS LAST";
 			default:
 				return super.getToken(token);
 		}
