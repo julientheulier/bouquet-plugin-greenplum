@@ -25,6 +25,9 @@ package com.squid.core.jdbc.vendor.greenplum.postgresql.render;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.squid.core.database.impl.DataSourceReliable;
 import com.squid.core.database.metadata.IMetadataEngine;
 import com.squid.core.database.model.DatabaseProduct;
@@ -45,15 +48,18 @@ import com.squid.core.domain.operators.AggregateOperatorDefinition;
 import com.squid.core.domain.operators.CoVarPopOperatorDefinition;
 import com.squid.core.domain.operators.IntrinsicOperators;
 import com.squid.core.domain.operators.OperatorDefinition;
+import com.squid.core.domain.operators.RankOperatorDefinition;
 import com.squid.core.domain.operators.StdevPopOperatorDefinition;
 import com.squid.core.sql.db.features.IGroupingSetSupport;
 import com.squid.core.sql.db.features.IMetadataForeignKeySupport;
+import com.squid.core.sql.db.features.IMetadataPrimaryKeySupport;
 import com.squid.core.sql.db.features.IRollupStrategySupport;
 import com.squid.core.sql.db.render.AddMonthsAsIntervalOperatorRenderer;
 import com.squid.core.sql.db.render.DateAddSubOperatorRenderer;
 import com.squid.core.sql.db.render.DateEpochOperatorRenderer;
 import com.squid.core.sql.db.render.MetatdataSearchFeatureSupport;
 import com.squid.core.sql.db.render.OrderedAnalyticOperatorRenderer;
+import com.squid.core.sql.db.render.RankOperatorRenderer;
 import com.squid.core.sql.db.templates.DefaultJDBCSkin;
 import com.squid.core.sql.db.templates.DefaultSkinProvider;
 import com.squid.core.sql.db.templates.ISkinProvider;
@@ -64,6 +70,8 @@ import com.squid.core.sql.render.ZeroIfNullFeatureSupport;
 import com.squid.core.sql.statements.SelectStatement;
 
 public class PostgresSkinProvider extends DefaultSkinProvider {
+
+	static final Logger logger = LoggerFactory.getLogger(PostgresSkinProvider.class);
 
 	private static final ZeroIfNullFeatureSupport zeroIfNull = new ANSIZeroIfNullFeatureSupport();
 
@@ -95,6 +103,7 @@ public class PostgresSkinProvider extends DefaultSkinProvider {
 		registerOperatorRender(DateOperatorDefinition.FROM_UNIXTIME, new PostgresDateEpochOperatorRenderer(DateEpochOperatorRenderer.FROM));
 		registerOperatorRender(DateOperatorDefinition.TO_UNIXTIME, new PostgresDateEpochOperatorRenderer(DateEpochOperatorRenderer.TO));
 		registerOperatorRender(DateTruncateOperatorDefinition.DATE_TRUNCATE, new PostgresDateTruncateOperatorRenderer());
+		logger.info("Postgresql plugin: support for Date_Truncate shortcuts");
 		registerOperatorRender(DateTruncateShortcutsOperatorDefinition.HOURLY_ID, new PostgresDateTruncateOperatorRenderer());
 		registerOperatorRender(DateTruncateShortcutsOperatorDefinition.DAILY_ID, new PostgresDateTruncateOperatorRenderer());
 		registerOperatorRender(DateTruncateShortcutsOperatorDefinition.WEEKLY_ID, new PostgresDateTruncateOperatorRenderer());
@@ -116,6 +125,9 @@ public class PostgresSkinProvider extends DefaultSkinProvider {
 		registerOperatorRender(CoVarPopOperatorDefinition.getExtendedId(IntrinsicOperators.COVAR_POP), new CoVarRenderer());
 		registerOperatorRender(AggregateOperatorDefinition.getExtendedId(IntrinsicOperators.AVG), new PostgresAvgRenderer());
 		//
+		registerOperatorRender(RankOperatorDefinition.RANK_ID, new RankOperatorRenderer());
+		registerOperatorRender(RankOperatorDefinition.ROWNUMBER_ID, new RankOperatorRenderer());
+
 		registerOperatorRender(RegexpOperatorDefinition.REGEXP_COUNT, new PostgresRegexpOperatorRenderer("REGEXP_COUNT"));
 		registerOperatorRender(RegexpOperatorDefinition.REGEXP_INSTR, new PostgresRegexpOperatorRenderer("REGEXP_INSTR"));
 
@@ -153,8 +165,9 @@ public class PostgresSkinProvider extends DefaultSkinProvider {
 		}
 		if (featureID == ZeroIfNullFeatureSupport.ID) {
 			return zeroIfNull;
-		}
-		if (featureID == IMetadataForeignKeySupport.ID) {
+		} else if (featureID == IMetadataForeignKeySupport.ID) {
+			return ISkinFeatureSupport.IS_SUPPORTED;
+		} else if (featureID == IMetadataPrimaryKeySupport.ID) {
 			return ISkinFeatureSupport.IS_SUPPORTED;
 		} else if (featureID == MetatdataSearchFeatureSupport.METADATA_SEARCH_FEATURE_ID) {
 			return METADATA_SEARCH_SUPPORT;
